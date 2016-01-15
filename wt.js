@@ -2,73 +2,76 @@ var http = require("http");
 var express = require('express');
 var app = express();
 
-var jsonArr = [];
-
-function printError(error) {
-	console.error(error.message);
-}
-
 function get(url, route) {
-	var request = http.get(url, function(response) {
-		var body = "";
+	var data = new Promise(function(resolve) {
+		var request = http.get(url, function(response) {
+			var body = '';
 
-		response.on('data', function (chunk) {
-			body += chunk;
-		});
+			response.on('data', function (chunk) {
+				body += chunk;
+			});
 
-		response.on('end', function() {
-			if (response.statusCode === 200) {
-				try {
-					printMessage(body, route);
-				} catch (error) {
-					printError(error);
-				}
-			} else {
-				printError({message: "There was an error. (" + http.STATUS_CODES[response.statusCode] + ")"});
-			}
+			response.on('end', function() {
+				resolve(body);
+			});
 		});
 	});
-	request.on('error', printError);
+
+	return data;
 }
 
-function printMessage(data, route) {
-	console.log('Route: ' + route);
-	var reg = /var point=new google.maps.LatLng\(26\.[\d]+,-80\.[\d]+\);/;
-	var routeArr = [];
+var reg = /var[\s]*point[\s]*=[\s]*new google.maps.LatLng\(26\.[\d]+,[\s]*-80\.[\d]+\)/gi;
 
-	var match = data.match(reg);
+function getPoints(body) {
+	var data = new Promise(function(resolve) {
+		var points = [];
 
-	if(match) {
-		match.forEach(function(cord) {
-			var point = cord.match(/26\.[\d]+,-80\.[\d]+/)[0];
-			routeArr.push(point);
-		});
-	}
+		var match = body.match(reg);
 
-	jsonArr.push({
-		route: route,
-		points: routeArr
+		if(match) {
+			match.forEach(function(cord) {
+				var point = cord.match(/26\.[\d]+,[\s]*-80\.[\d]+/)[0];
+				points.push(point);
+			});
+		}
+		resolve(points);
 	});
+
+	return data;
 }
 
-function makeCall() {
-	for(var i = 4; i <= 13; i++) {
-		if(i != 11) {
-			get("http://suntrolley.metromediaworks.net/mobile/route-map.php?height=546&route=" + i, i);
+function getRoutes() {
+	var arr = [];
+	for(var route = 4; route <= 13; route++) {
+		if(route != 11) {
+			arr.push({
+				route: route,
+				body: get("http://suntrolley.metromediaworks.net/mobile/route-map.php?height=546&route=" + route)
+			});
 		}
 	}
 
-	var c = setInterval(function() {
-		console.log(jsonArr);
-		if(jsonArr.length > 0) clearInterval(c);
-	}, 1000);
+	var data = arr.map(function(data) {
+		return data.body.then(getPoints).then(function(points) {
+			return {
+				route: data.route,
+				points: points
+			}
+		});
+	});
+
+	return Promise.all(data).then(function(data) {
+		return data;
+	});
 }
 
 console.log("Hello Sun Trolley Water Trolley!");
-makeCall();
+
 
 app.get('/', function(req, res) {
-	res.send(jsonArr);
+	getRoutes().then(function(jsonArr) {
+		res.send(jsonArr);
+	});
 });
 
 var port = process.env.PORT || 3000;
