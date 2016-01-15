@@ -1,4 +1,5 @@
 var http = require("http");
+var cors = require('cors');
 var express = require('express');
 var app = express();
 
@@ -73,7 +74,7 @@ app.get('/wiki', function(req, res) {
 	res.redirect('https://github.com/eorroe/suntrolley/wiki');
 });
 
-app.get('/api', function(req, res) {
+app.get('/api', cors(), function(req, res) {
 	getTrolleys().then(function(trolleys) {
 		if(req.query.route) {
 			trolleys = trolleys.filter(function(trolley) {
