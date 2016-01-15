@@ -1,0 +1,56 @@
+[
+	{
+		"id": 4,
+		"name": "Las Olas Link",
+		"type": 3,
+		"color": "009999"
+	},
+	{
+		"id": 5,
+		"name": "Galt Link",
+		"type": 3,
+		"color": "0066CC"
+	},
+	{
+		"id": 6,
+		"name": "Beach Link",
+		"type": 3,
+		"color": "FF0099"
+	},
+	{
+		"id": 7,
+		"name": "Airport Link",
+		"type": 3,
+		"color": "FFFFFF"
+	},
+	{
+		"id": 8,
+		"name": "Neighborhood Link",
+		"type": 3,
+		"color": "FFFFFF"
+	},
+	{
+		"id": 9,
+		"name": "Water Trolley",
+		"type": 4,
+		"color": "FFFFFF"
+	},
+	{
+		"id": 10,
+		"name": "NW Community Link",
+		"type": 3,
+		"color": "FFFFFF"
+	},
+	{
+		"id": 12,
+		"name": "Uptown Link",
+		"type": 3,
+		"color": "FFFFFF"
+	},
+	{
+		"id": 13,
+		"name": "Downtown Link",
+		"type": 3,
+		"color": "FFFFFF"
+	 }
+]
