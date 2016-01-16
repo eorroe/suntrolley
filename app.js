@@ -66,6 +66,8 @@ function getTrolleys() {
 	});
 }
 
+app.use(express.static(__dirname + '/public'));
+
 app.get('/', function(req, res) {
 	res.redirect('/wiki');
 });
@@ -83,6 +85,10 @@ app.get('/api', cors(), function(req, res) {
 		}
 		res.send(trolleys);
 	});
+});
+
+app.get('/docs', function(req, res) {
+	res.sendFile(__dirname + '/public/docs/index.html');
 });
 
 var port = process.env.PORT || 3000;
