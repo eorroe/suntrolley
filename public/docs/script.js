@@ -1,7 +1,8 @@
-fetch('data.json').then(res => res.json()).then(function(docsArr) {
+fetch('data.json').then(function(res) {
+	return res.json();
+}).then(function(docsArr) {
 	var docList = $$('#docList')[0];
 	var docTemp = $$('#docTemp')[0].content;
-
 	var urlEl = docTemp.querySelector('a');
 	var descEl = docTemp.querySelector('span');
 	var exampleEl = docTemp.querySelector('pre');
@@ -15,7 +16,9 @@ fetch('data.json').then(res => res.json()).then(function(docsArr) {
 	});
 
 	var examplesData = docsArr.map(function(doc) {
-		return fetch('https://suntrolley.herokuapp.com' + doc.url).then(res => res.json());
+		return fetch('https://suntrolley.herokuapp.com' + doc.url).then(function(res) {
+			return res.json();
+		});
 	});
 
 	Promise.all(examplesData).then(function(examples) {
