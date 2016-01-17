@@ -1,4 +1,5 @@
 var http = require("http");
+var cors = require('cors');
 var express = require('express');
 var app = express();
 
@@ -40,7 +41,7 @@ function getPoints(body) {
 	return data;
 }
 
-function getRoutes() {
+function getTrolleys() {
 	var arr = [];
 	for(var route = 4; route <= 13; route++) {
 		if(route != 11) {
@@ -65,12 +66,24 @@ function getRoutes() {
 	});
 }
 
-console.log("Hello Sun Trolley Water Trolley!");
-
+app.use(express.static('public'));
 
 app.get('/', function(req, res) {
-	getRoutes().then(function(jsonArr) {
-		res.send(jsonArr);
+	res.redirect('/wiki');
+});
+
+app.get('/wiki', function(req, res) {
+	res.redirect('https://github.com/eorroe/suntrolley/wiki');
+});
+
+app.get('/api', cors(), function(req, res) {
+	getTrolleys().then(function(trolleys) {
+		if(req.query.route) {
+			trolleys = trolleys.filter(function(trolley) {
+				if(trolley.route == req.query.route) return trolley;
+			});
+		}
+		res.send(trolleys);
 	});
 });
 

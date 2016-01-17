@@ -1,0 +1,11 @@
+[
+	{
+		"url": "/api",
+		"description": "Returns all trolleys"
+	},
+
+	{
+		"url": "/api?route=9",
+		"description": "Returns all trolleys in route 9"
+	}
+]
