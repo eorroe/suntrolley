@@ -57,7 +57,7 @@ function getTrolleys() {
 			return {
 				route: data.route,
 				points: points
-			}
+			};
 		});
 	});
 
@@ -70,6 +70,10 @@ app.use(express.static('public'));
 
 app.get('/', function(req, res) {
 	res.redirect('/wiki');
+});
+
+app.get('/map', function(req, res) {
+	res.sendFile(__dirname + '/public/map.html');
 });
 
 app.get('/wiki', function(req, res) {
