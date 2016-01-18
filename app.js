@@ -72,10 +72,6 @@ app.get('/', function(req, res) {
 	res.redirect('/wiki');
 });
 
-app.get('/map', function(req, res) {
-	res.sendFile(__dirname + '/public/map.html');
-});
-
 app.get('/wiki', function(req, res) {
 	res.redirect('https://github.com/eorroe/suntrolley/wiki');
 });
