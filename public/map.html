@@ -47,6 +47,49 @@
 
 		L.control.layers({'Google Map':googleRoadmap, 'Google Satellite':googleHybrid, 'OpenStreetMap':osmLayer},{}).addTo(map);
 
+		function init() {
+			requestTrolleys();
+			showRouteShapes();
+		}
+
+		function requestTrolleys() {
+			$.getJSON('api',
+		  function(data) {
+		    addTrolleys(data);
+		  });
+		}
+
+		function addTrolleys(trolleys) {
+			var i = 0;
+			for (i = 0; i < trolleys.length; i++) {
+				var j = 0;
+				for (j = 0; j < trolleys[i].points.length; i++) {
+					addMarker(
+						trolleys[i].route,
+						trolleys[i].points[j]
+					);
+				}
+			}
+		}
+
+		function addMarker(name, location) {
+			latlon = location.split(',');
+			var marker = L.marker([latlon[0], latlon[1]]).bindPopup(
+		      '<strong>Route: ' + name + '</strong>'+
+					'<br>' +  location,
+		      { offset: new L.Point(0, -22) }).addTo(map);
+			marker.on('mouseover', function (e) {
+				this.openPopup();
+			});
+			console.log(latlon);
+		}
+
+		function showRouteShapes() {
+			
+		}
+
+		init();
+
 		</script>
 
 	</body>
