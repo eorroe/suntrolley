@@ -87,12 +87,6 @@ app.get('/api', cors(), function(req, res) {
 	});
 });
 
-app.get('/api', function(req, res) {
-	getRoutes().then(function(jsonArr) {
-		res.send(jsonArr);
-	});
-});
-
 var port = process.env.PORT || 3000;
 app.listen(port, function() {
 	console.log('SunTrolley Is Running On Port ' + port);
