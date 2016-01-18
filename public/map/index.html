@@ -6,15 +6,15 @@
 		<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
 		<style>
-        body {
-            padding: 0;
-            margin: 0;
-        }
-        html, body, #map {
-            height: 100%;
-            width: 100%;
-        }
-    </style>
+		body {
+			padding: 0;
+			margin: 0;
+		}
+		html, body, #map {
+			height: 100%;
+			width: 100%;
+		}
+	</style>
 	</head>
 
 	<body >
@@ -32,9 +32,9 @@
 		var accessToken = 'pk.eyJ1IjoicXRyYW5kZXYiLCJhIjoiSDF2cGNjZyJ9.D1ybOKe77AQDPHkxCCEpJQ';
 		var osmLayer = L.tileLayer('https://{s}.tiles.mapbox.com/v4/qtrandev.lc0i743k/{z}/{x}/{y}.png?access_token=' + accessToken, {
 			maxZoom: 20,
-		  attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
-		    '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-		    'Imagery &copy; <a href="http://mapbox.com">Mapbox</a>'
+			attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
+			'<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+			'Imagery &copy; <a href="http://mapbox.com">Mapbox</a>'
 		});
 
 		// Set up Google Maps layers
@@ -54,14 +54,14 @@
 					map.removeLayer(allMarkers[i]); // Remove markers for refresh
 				}
 				allMarkers = [];
-		    requestTrolleys();
+			requestTrolleys();
 		  }, 5000);
 		}
 
 		function requestTrolleys() {
-			$.getJSON('api',
+			$.getJSON('/api',
 		  function(data) {
-		    addTrolleys(data);
+			addTrolleys(data);
 		  });
 		}
 
@@ -81,9 +81,9 @@
 		function addMarker(name, location) {
 			latlon = location.split(',');
 			var marker = L.marker([latlon[0], latlon[1]]).bindPopup(
-		      '<strong>Route: ' + name + ' (' + getName(name) +')</strong>'+
+			  '<strong>Route: ' + name + ' (' + getName(name) +')</strong>'+
 					'<br>' +  location,
-		      { offset: new L.Point(0, -22) }).addTo(map);
+			  { offset: new L.Point(0, -22) }).addTo(map);
 			marker.on('mouseover', function (e) {
 				this.openPopup();
 			});
@@ -96,14 +96,14 @@
 
 		function requestShapeData() {
 			$(document).ready(function() {
-			    $.ajax({
-			        type: "GET",
-			        url: "../data/shapes.txt",
-			        dataType: "text",
-			        success: function(data) {
-			            processData(data);
-			        }
-			    });
+				$.ajax({
+					type: "GET",
+					url: "../data/shapes.txt",
+					dataType: "text",
+					success: function(data) {
+						processData(data);
+					}
+				});
 			});
 		}
 
