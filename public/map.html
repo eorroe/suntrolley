@@ -47,9 +47,18 @@
 
 		L.control.layers({'Google Map':googleRoadmap, 'Google Satellite':googleHybrid, 'OpenStreetMap':osmLayer},{}).addTo(map);
 
+		var allMarkers = [];
+
 		function init() {
-			requestTrolleys();
 			showRouteShapes();
+			requestTrolleys(); // Do initial request
+			setInterval(function() {
+				for (var i=0; i<allMarkers.length; i++) {
+					map.removeLayer(allMarkers[i]); // Remove markers for refresh
+				}
+				allMarkers = [];
+		    requestTrolleys();
+		  }, 5000);
 		}
 
 		function requestTrolleys() {
@@ -75,17 +84,132 @@
 		function addMarker(name, location) {
 			latlon = location.split(',');
 			var marker = L.marker([latlon[0], latlon[1]]).bindPopup(
-		      '<strong>Route: ' + name + '</strong>'+
+		      '<strong>Route: ' + name + ' (' + getName(name) +')</strong>'+
 					'<br>' +  location,
 		      { offset: new L.Point(0, -22) }).addTo(map);
 			marker.on('mouseover', function (e) {
 				this.openPopup();
 			});
-			console.log(latlon);
+			allMarkers.push(marker); // Add to remove on refresh
 		}
 
 		function showRouteShapes() {
-			
+			requestShapeData();
+		}
+
+		function requestShapeData() {
+			$(document).ready(function() {
+			    $.ajax({
+			        type: "GET",
+			        url: "/shapes.txt",
+			        dataType: "text",
+			        success: function(data) {
+			            processData(data);
+			        }
+			    });
+			});
+		}
+
+		function processData(allText) {
+			var allTextLines = allText.split(/\r\n|\n/);
+			var headers = allTextLines[0].split(',');
+			var routes = [];
+			for (var i=1; i<allTextLines.length; i++) {
+					var data = allTextLines[i].split(',');
+					if (data.length >= 4) {
+						if (routes[data[0]] === undefined) {
+							routes[data[0]] = [];
+						}
+						routes[data[0]].push(data);
+					}
+			}
+			for (var route in routes) {
+				addShape(routes[route]);
+			}
+		}
+
+		function addShape(shapes) {
+			var points = [];
+			for (var i=0; i<shapes.length; i++) {
+				points.push(L.latLng(shapes[i][1],shapes[i][2]));
+			}
+			var markerLine = L.polyline(points, {color: '#'+getColor(shapes[0][0])});
+			map.addLayer(markerLine);
+		}
+
+		var routeColors = [
+			{
+				"id": 4,
+				"name": "Las Olas Link",
+				"type": 3,
+				"color": "009999"
+			},
+			{
+				"id": 5,
+				"name": "Galt Link",
+				"type": 3,
+				"color": "0066CC"
+			},
+			{
+				"id": 6,
+				"name": "Beach Link",
+				"type": 3,
+				"color": "FF0099"
+			},
+			{
+				"id": 7,
+				"name": "Airport Link",
+				"type": 3,
+				"color": "FF0000"
+			},
+			{
+				"id": 8,
+				"name": "Neighborhood Link",
+				"type": 3,
+				"color": "00FF00"
+			},
+			{
+				"id": 9,
+				"name": "Water Trolley",
+				"type": 4,
+				"color": "0000FF"
+			},
+			{
+				"id": 10,
+				"name": "NW Community Link",
+				"type": 3,
+				"color": "FFFF00"
+			},
+			{
+				"id": 12,
+				"name": "Uptown Link",
+				"type": 3,
+				"color": "00FFFF"
+			},
+			{
+				"id": 13,
+				"name": "Downtown Link",
+				"type": 3,
+				"color": "FF00FF"
+			 }
+		];
+
+		function getColor(route) {
+			for (var i=0; i<routeColors.length; i++) {
+				if (routeColors[i].id == route) {
+					return routeColors[i].color;
+				}
+			}
+			return "000000";
+		}
+
+		function getName(route) {
+			for (var i=0; i<routeColors.length; i++) {
+				if (routeColors[i].id == route) {
+					return routeColors[i].name;
+				}
+			}
+			return route;
 		}
 
 		init();
