@@ -131,6 +131,13 @@
 				points.push(L.latLng(shapes[i][1],shapes[i][2]));
 			}
 			var markerLine = L.polyline(points, {color: '#'+getColor(shapes[0][0])});
+			markerLine.bindPopup(getName(shapes[0][0]),{offset: new L.Point(0, 0)});
+			markerLine.on('mouseover', function (e) {
+				this.openPopup();
+			});
+			markerLine.on('mouseout', function (e) {
+				this.closePopup();
+			});
 			map.addLayer(markerLine);
 		}
 
